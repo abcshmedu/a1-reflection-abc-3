@@ -35,7 +35,11 @@ public class Renderer {
                 field.setAccessible(true);
                 builder.append(field.getName());
                 builder.append(" (Type ");
-                builder.append(field.getType().getSimpleName());
+                if (field.getType().isPrimitive()) {
+                    builder.append(field.getType().getSimpleName());
+                } else {
+                    builder.append(field.getType().getCanonicalName());
+                }
                 builder.append("): ");
                 builder.append(field.get(object));
                 builder.append('\n');
