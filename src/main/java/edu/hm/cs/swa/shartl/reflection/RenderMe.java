@@ -1,8 +1,20 @@
 package edu.hm.cs.swa.shartl.reflection;
 
-/**
- * Created by Sebastian Hartl on 27.03.2017.
- */
-public @interface RenderMe {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
+/**
+ * Annotation RenderMe.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface RenderMe {
+    /**
+     * Currently not used.
+     *
+     * @return don' know
+     */
+    String with() default "";
 }
