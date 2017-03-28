@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface RenderMe {
     /**
-     * Currently not used.
-     *
-     * @return don' know
+     * if set, use not default renderer.
+     * need to be a renderer with its canonical name.
+     * @return don' know what to write :D.
      */
     String with() default "";
 }

@@ -30,8 +30,22 @@ public class Renderer {
         builder.append("Instance of ");
         builder.append(toRender.getCanonicalName());
         builder.append(":\n");
+
+        renderFields(fields, builder);
+
+        System.out.println(builder.toString());
+        return builder.toString();
+    }
+
+    /**
+     * Render fields of given class.
+     * @param fields Fields to be rendered.
+     * @param builder For string output.
+     * @throws IllegalAccessException if field can't get read via reflection.
+     */
+    private void renderFields(final Field[] fields, final StringBuilder builder) throws IllegalAccessException {
         for (final Field field : fields) {
-            if (field.isAnnotationPresent(edu.hm.cs.swa.shartl.reflection.RenderMe.class)) {
+            if (field.isAnnotationPresent(RenderMe.class)) {
                 field.setAccessible(true);
                 builder.append(field.getName());
                 builder.append(" (Type ");
@@ -45,7 +59,5 @@ public class Renderer {
                 builder.append('\n');
             }
         }
-        System.out.println(builder.toString());
-        return builder.toString();
     }
 }
