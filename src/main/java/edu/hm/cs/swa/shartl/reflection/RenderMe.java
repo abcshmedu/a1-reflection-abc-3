@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Annotation RenderMe.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface RenderMe {
     /**
      * Currently not used.
