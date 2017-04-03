@@ -38,7 +38,6 @@ public class Renderer {
         renderFields(fields, builder);
         renderMethods(methods, builder);
 
-        System.out.println(builder.toString());
         return builder.toString();
     }
 
@@ -106,21 +105,22 @@ public class Renderer {
             final Class renderer = Class.forName(canonicalName);
             final Object rendererObject = renderer.newInstance();
             final Class clazz = field.getType();
-            final Class[] arr = new Class[1];
-            arr[0] = clazz;
+            final Class[] parameterArray = new Class[1];
+            parameterArray[0] = clazz;
 
             builder.append(field.getName());
-            builder.append(renderer.getMethod("render", arr).invoke(rendererObject, field.get(this.object)));
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            builder.append(renderer.getMethod("render", parameterArray)
+                    .invoke(rendererObject, field.get(this.object)));
+        } catch (final InstantiationException exception) {
+            exception.printStackTrace();
+        } catch (final IllegalAccessException exception) {
+            exception.printStackTrace();
+        } catch (final ClassNotFoundException exception) {
+            exception.printStackTrace();
+        } catch (final NoSuchMethodException exception) {
+            exception.printStackTrace();
+        } catch (final InvocationTargetException exception) {
+            exception.printStackTrace();
         }
         return builder.toString();
     }

@@ -14,7 +14,7 @@ public @interface RenderMe {
     /**
      * if set, use not default renderer.
      * need to be a renderer with its canonical name.
-     * @return don' know what to write :D.
+     * @return canonical name of renderer which should be used.
      */
     String with() default "";
 }
