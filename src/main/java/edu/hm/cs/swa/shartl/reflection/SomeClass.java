@@ -9,7 +9,7 @@ import java.util.Date;
 public class SomeClass {
     @RenderMe
     private int foo;
-    @RenderMe
+    @RenderMe(with = "edu.hm.cs.swa.shartl.reflection.ArrayRenderer")
     int[] array = {1, 2, 3,};
     @RenderMe
     private Date date = new Date(123456789);

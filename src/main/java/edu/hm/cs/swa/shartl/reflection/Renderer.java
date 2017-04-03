@@ -1,6 +1,7 @@
 package edu.hm.cs.swa.shartl.reflection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -29,6 +30,7 @@ public class Renderer {
         final Field[] fields = toRender.getDeclaredFields();
         final Method[] methods = toRender.getDeclaredMethods();
         final StringBuilder builder = new StringBuilder();
+
         builder.append("Instance of ");
         builder.append(toRender.getCanonicalName());
         builder.append(":\n");
@@ -64,7 +66,7 @@ public class Renderer {
                     builder.append(field.get(object).toString());
                     builder.append('\n');
                 } else {
-                    renderViaReflection(annotation.with());
+                    builder.append(renderViaReflection(annotation.with(), field));
                 }
             }
         }
@@ -93,18 +95,32 @@ public class Renderer {
 
     /**
      * Renders via a custom renderer.
+     *
      * @param canonicalName name of renderer for reflection.
+     * @param field         field to get information for.
+     * @return string with informations about field.
      */
-    private void renderViaReflection(final String canonicalName)  {
+    private String renderViaReflection(final String canonicalName, final Field field) {
+        final StringBuilder builder = new StringBuilder();
         try {
             final Class renderer = Class.forName(canonicalName);
             renderer.newInstance();
+            Class clazz = field.getType();
+            Class[] arr = new Class[1];
+            arr[0] = clazz;
+            builder.append(field.getName());
+            builder.append(renderer.getMethod("render", arr).invoke(renderer.newInstance(), field.get(this.object)));
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
+        return builder.toString();
     }
 }
