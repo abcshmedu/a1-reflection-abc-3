@@ -24,8 +24,14 @@ public class Renderer {
      *
      * @return String output of methods with @RenderMe.
      * @throws IllegalAccessException if field can't get read via reflection.
+     * @throws ClassNotFoundException if canonical name is incorrect.
+     * @throws IllegalAccessException if given class is no renderer and from class Class instead.
+     * @throws InstantiationException if renderer class has no default constructor.
+     * @throws NoSuchMethodException if method "render" was not found.
+     * @throws InvocationTargetException if method "render" can not be invoked.
      */
-    public String render() throws IllegalAccessException {
+    public String render() throws IllegalAccessException, ClassNotFoundException, NoSuchMethodException,
+            InstantiationException, InvocationTargetException {
         final Class toRender = this.object.getClass();
         final Field[] fields = toRender.getDeclaredFields();
         final Method[] methods = toRender.getDeclaredMethods();
@@ -47,8 +53,14 @@ public class Renderer {
      * @param fields  Fields to be rendered.
      * @param builder For string output.
      * @throws IllegalAccessException if field can't get read via reflection.
+     * @throws ClassNotFoundException if canonical name is incorrect.
+     * @throws IllegalAccessException if given class is no renderer and from class Class instead.
+     * @throws InstantiationException if renderer class has no default constructor.
+     * @throws NoSuchMethodException if method "render" was not found.
+     * @throws InvocationTargetException if method "render" can not be invoked.
      */
-    private void renderFields(final Field[] fields, final StringBuilder builder) throws IllegalAccessException {
+    private void renderFields(final Field[] fields, final StringBuilder builder) throws IllegalAccessException,
+            ClassNotFoundException, NoSuchMethodException, InstantiationException, InvocationTargetException {
         for (final Field field : fields) {
             if (field.isAnnotationPresent(RenderMe.class)) {
                 final RenderMe annotation = field.getAnnotation(RenderMe.class);
@@ -94,34 +106,29 @@ public class Renderer {
 
     /**
      * Renders via a custom renderer.
-     *
      * @param canonicalName name of renderer for reflection.
-     * @param field         field to get information for.
-     * @return string with informations about field.
+     * @param field field to get information for.
+     * @return string with information about field.
+     * @throws ClassNotFoundException if canonical name is incorrect.
+     * @throws IllegalAccessException if given class is no renderer and from class Class instead.
+     * @throws InstantiationException if renderer class has no default constructor.
+     * @throws NoSuchMethodException if method "render" was not found.
+     * @throws InvocationTargetException if method "render" can not be invoked.
      */
-    private String renderViaReflection(final String canonicalName, final Field field) {
+    private String renderViaReflection(final String canonicalName, final Field field) throws ClassNotFoundException,
+            IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         final StringBuilder builder = new StringBuilder();
-        try {
-            final Class renderer = Class.forName(canonicalName);
-            final Object rendererObject = renderer.newInstance();
-            final Class clazz = field.getType();
-            final Class[] parameterArray = new Class[1];
-            parameterArray[0] = clazz;
+        final Class renderer = Class.forName(canonicalName);
+        final Object rendererObject = renderer.newInstance();
+        final Class clazz = field.getType();
+        final Class[] parameterArray = new Class[1];
+        parameterArray[0] = clazz;
 
-            builder.append(field.getName());
-            builder.append(renderer.getMethod("render", parameterArray)
-                    .invoke(rendererObject, field.get(this.object)));
-        } catch (final InstantiationException exception) {
-            exception.printStackTrace();
-        } catch (final IllegalAccessException exception) {
-            exception.printStackTrace();
-        } catch (final ClassNotFoundException exception) {
-            exception.printStackTrace();
-        } catch (final NoSuchMethodException exception) {
-            exception.printStackTrace();
-        } catch (final InvocationTargetException exception) {
-            exception.printStackTrace();
-        }
+        builder.append(field.getName());
+        builder.append(' ');
+        builder.append(renderer.getMethod("render", parameterArray)
+                .invoke(rendererObject, field.get(this.object)));
+
         return builder.toString();
     }
 }
