@@ -1,7 +1,14 @@
 package edu.hm.cs.swa.shartl.reflection;
 
+/**
+ * Implementation of ArrayRenderer.
+ */
 public class ArrayRenderer {
-
+    /**
+     * Renders an integer array.
+     * @param array array to render.
+     * @return information about given array.
+     */
     public String render(int[] array) {
         final StringBuilder builder = new StringBuilder();
         builder.append("");

@@ -104,12 +104,13 @@ public class Renderer {
         final StringBuilder builder = new StringBuilder();
         try {
             final Class renderer = Class.forName(canonicalName);
-            renderer.newInstance();
-            Class clazz = field.getType();
-            Class[] arr = new Class[1];
+            final Object rendererObject = renderer.newInstance();
+            final Class clazz = field.getType();
+            final Class[] arr = new Class[1];
             arr[0] = clazz;
+
             builder.append(field.getName());
-            builder.append(renderer.getMethod("render", arr).invoke(renderer.newInstance(), field.get(this.object)));
+            builder.append(renderer.getMethod("render", arr).invoke(rendererObject, field.get(this.object)));
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
